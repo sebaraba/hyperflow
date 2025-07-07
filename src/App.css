@@ -1,0 +1,236 @@
+/* ========== Layout ========== */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ========== Navigation ========== */
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1a1a1a;
+  border-bottom: 1px solid #333;
+}
+
+.nav-brand a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #646cff;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: #ffffff;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.nav-links a:hover {
+  background-color: #333;
+}
+
+/* ========== Pages ========== */
+.home,
+.about {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.home h1,
+.about h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #646cff;
+}
+
+.about ul {
+  text-align: left;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.about li {
+  padding: 0.5rem 0 0.5rem 1rem;
+  border-left: 3px solid #646cff;
+  margin-bottom: 0.5rem;
+  background-color: #1a1a1a;
+}
+
+/* ========== Wallet Connection ========== */
+.wallet-connection {
+  margin-top: 2rem;
+  padding: 2rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background-color: #1a1a1a;
+}
+
+.connect-options {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.wallet-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.wallet-info p {
+  margin: 0;
+  font-family: monospace;
+  background-color: #333;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+/* ========== Buttons ========== */
+.connect-button,
+.disconnect-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.connect-button {
+  background-color: #646cff;
+  color: white;
+}
+
+.connect-button:hover {
+  background-color: #5a5fcf;
+}
+
+.disconnect-button {
+  background-color: #ff6b6b;
+  color: white;
+}
+
+.disconnect-button:hover {
+  background-color: #ff5252;
+}
+
+/* ========== Connectors ========== */
+.connector-list {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.connector-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border: 1px solid #646cff;
+  border-radius: 4px;
+  background-color: transparent;
+  color: #646cff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.connector-button:hover {
+  background-color: #646cff;
+  color: white;
+}
+
+/* ========== Balance Display ========== */
+.balance {
+  padding: 1rem;
+  background-color: #2a2a2a;
+  border-radius: 4px;
+  margin: 1rem 0;
+}
+
+.balance h3 {
+  margin: 0 0 0.5rem 0;
+  color: #646cff;
+  font-size: 1rem;
+}
+
+.balance p {
+  margin: 0;
+  font-family: monospace;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #4ade80;
+}
+
+/* ========== Chain Switcher ========== */
+.chain-switcher {
+  padding: 1rem;
+  background-color: #2a2a2a;
+  border-radius: 4px;
+  margin: 1rem 0;
+}
+
+.chain-switcher h3,
+.chain-switcher h4 {
+  margin: 0 0 0.5rem 0;
+  color: #646cff;
+  font-size: 1rem;
+}
+
+.chain-switcher p {
+  margin: 0.25rem 0;
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.chain-options {
+  margin-top: 1rem;
+}
+
+.chain-button {
+  padding: 0.5rem 1rem;
+  margin: 0.25rem;
+  font-size: 0.9rem;
+  border: 1px solid #646cff;
+  border-radius: 4px;
+  background-color: transparent;
+  color: #646cff;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.chain-button:hover:not(:disabled) {
+  background-color: #646cff;
+  color: white;
+}
+
+.chain-button.active {
+  background-color: #4ade80;
+  border-color: #4ade80;
+  color: #1a1a1a;
+}
+
+.chain-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
