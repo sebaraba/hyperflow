@@ -4,22 +4,22 @@ import { injected, metaMask, walletConnect } from 'wagmi/connectors';
 
 // Define HyperEVM testnet
 export const hyperEvmTestnet = {
-  id: 811,
+  id: 998,
   name: 'HyperEVM Testnet',
   nativeCurrency: {
     decimals: 18,
-    name: 'Ether',
-    symbol: 'ETH',
+    name: 'HYPE',
+    symbol: 'HYPE',
   },
   rpcUrls: {
     default: {
-      http: ['https://evm-testnet.hyperlane.eth.limo'],
+      http: ['https://rpc.hyperliquid-testnet.xyz/evm'],
     },
   },
   blockExplorers: {
     default: {
       name: 'HyperEVM Explorer',
-      url: 'https://explorer.hyperlane.eth.limo',
+      url: 'https://purrsec.com',
     },
   },
   testnet: true,
