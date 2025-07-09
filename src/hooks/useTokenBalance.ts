@@ -1,43 +1,32 @@
-import { useReadContract } from 'wagmi';
-import { erc20Abi } from 'viem';
+import { useBalance } from 'wagmi';
+import { formatEther } from 'viem';
 
-interface UseTokenBalanceProps {
-  tokenAddress: `0x${string}`;
+interface TokenBalanceHookProps {
   userAddress: `0x${string}` | undefined;
+  tokenAddress?: `0x${string}`;
   enabled?: boolean;
 }
 
-export const useTokenBalance = ({
-  tokenAddress,
-  userAddress,
-  enabled = true,
-}: UseTokenBalanceProps) => {
-  return useReadContract({
-    address: tokenAddress,
-    abi: erc20Abi,
-    functionName: 'balanceOf',
-    args: userAddress ? [userAddress] : undefined,
+export const useTokenBalance = ({ userAddress, tokenAddress, enabled = true }: TokenBalanceHookProps) => {
+  const { data: balance, isLoading, error } = useBalance({
+    address: userAddress,
+    token: tokenAddress, // If undefined, fetches native ETH balance
     query: {
       enabled: enabled && !!userAddress,
-      refetchInterval: 10000, // Refetch every 10 seconds
     },
   });
-};
 
-// Example usage hook for token symbol
-export const useTokenSymbol = (tokenAddress: `0x${string}`) => {
-  return useReadContract({
-    address: tokenAddress,
-    abi: erc20Abi,
-    functionName: 'symbol',
-  });
-};
+  const formattedBalance = balance ? {
+    value: Number(formatEther(balance.value)),
+    symbol: balance.symbol,
+    decimals: balance.decimals,
+    formatted: `${Number(formatEther(balance.value)).toFixed(6)} ${balance.symbol}`,
+    raw: balance.value,
+  } : null;
 
-// Example usage hook for token decimals
-export const useTokenDecimals = (tokenAddress: `0x${string}`) => {
-  return useReadContract({
-    address: tokenAddress,
-    abi: erc20Abi,
-    functionName: 'decimals',
-  });
+  return {
+    balance: formattedBalance,
+    isLoading,
+    error,
+  };
 };
