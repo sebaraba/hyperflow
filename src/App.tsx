@@ -1,9 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AppShell, Center } from '@mantine/core';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Import Routes
+import { AppShell } from '@mantine/core'; // Removed unused Center
 import { QueryProvider } from './providers/QueryProvider';
 import { Navigation } from './components/Navigation';
-import { Home } from './pages/Home';
+import { Dashboard } from './pages/Dashboard.tsx';
 import { About } from './pages/About';
+import { SwapPage } from './pages/SwapPage.tsx';
+import { Routes as AppRoutes } from './constants/routes.ts'; // Renamed Routes enum
+import { ComingSoon } from './pages/ComingSoon.tsx';
 
 function App() {
   return (
@@ -16,12 +19,16 @@ function App() {
         >
           <Navigation />
           <AppShell.Main style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Center style={{ width: '100%' }}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-              </Routes>
-            </Center>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path={AppRoutes.About} element={<About />} />
+              <Route path={AppRoutes.Swap} element={<SwapPage />} />
+              <Route path={AppRoutes.Dashboard} element={<Dashboard />} />
+              <Route path={AppRoutes.Liquidity} element={<ComingSoon />} />
+              <Route path={AppRoutes.Lock} element={<ComingSoon />} />
+              <Route path={AppRoutes.Vote} element={<ComingSoon />} />
+              <Route path={AppRoutes.Incentivize} element={<ComingSoon />} />
+            </Routes>
           </AppShell.Main>
         </AppShell>
       </Router>
