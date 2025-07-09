@@ -10,7 +10,7 @@ Your TypeScript React project with HyperEVM integration is now fully configured 
 
 - **TypeScript** - Type-safe development
 - **React 19** - Latest React with Vite build system
-- **React Router DOM** - Client-side routing with Home/About pages
+- **React Router DOM** - Client-side routing with Dashboard/About pages
 - **TanStack Query (React Query)** - Data fetching with DevTools
 - **Wagmi v2 + Viem** - Modern Web3 React hooks library for HyperEVM
 
@@ -57,7 +57,7 @@ src/
 │   ├── WalletConnection.tsx # Web3 wallet UI
 │   └── Balance.tsx         # ETH balance display
 ├── pages/
-│   ├── Home.tsx           # Home page
+│   ├── Dashboard.tsx           # Dashboard page
 │   └── About.tsx          # About page
 ├── providers/
 │   ├── QueryProvider.tsx  # React Query setup

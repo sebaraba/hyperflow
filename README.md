@@ -65,7 +65,7 @@ src/
 │   ├── Navigation.tsx   # Navigation component
 │   └── WalletConnection.tsx  # Web3 wallet connection
 ├── pages/              # Page components
-│   ├── Home.tsx        # Home page
+│   ├── Dashboard.tsx        # Dashboard page
 │   └── About.tsx       # About page
 ├── providers/          # React context providers
 │   ├── QueryProvider.tsx    # TanStack Query setup
