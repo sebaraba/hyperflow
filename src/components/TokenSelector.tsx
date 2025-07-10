@@ -72,6 +72,7 @@ export const TokenSelector = ({
       styles={{
         input: {
           ...seamlessStyles,
+          textAlign: 'center',
           '&:focus': {
             borderColor:
               variant === 'seamless' ? 'rgba(255, 255, 255, 0.3)' : undefined,
