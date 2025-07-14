@@ -1,36 +1,26 @@
-import { Select, Group, Avatar, Text, Box } from '@mantine/core';
+import { Group, Avatar, Text, Box } from '@mantine/core';
 import { IconChevronDown } from '@tabler/icons-react';
 import type { Token } from '../services/tokenService';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 
 interface TokenSelectorProps {
   tokens: Token[];
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   placeholder?: string;
   variant?: 'default' | 'seamless';
+  onClick?: () => void;
 }
 
 export const TokenSelector = ({
   tokens,
   value,
-  onChange,
   placeholder = 'Select token',
   variant = 'default',
+  onClick,
 }: TokenSelectorProps) => {
   const selectedToken = tokens.find((token) => token.symbol === value);
-
-  const handleChange = (newValue: string | null) => {
-    if (newValue) {
-      onChange(newValue);
-    }
-  };
-
-  const selectData = tokens.map((token) => ({
-    value: token.symbol,
-    label: token.name,
-    symbol: token.symbol,
-    logoURI: token.logoURI,
-  }));
+  const themeStyles = useThemeStyles();
 
   const seamlessStyles =
     variant === 'seamless'
@@ -43,61 +33,74 @@ export const TokenSelector = ({
           minWidth: '120px',
           fontSize: '16px',
           fontWeight: 600,
+          cursor: 'pointer',
         }
-      : {};
+      : {
+          padding: '8px 12px',
+          borderRadius: '8px',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+          cursor: 'pointer',
+        };
 
   return (
-    <Select
-      value={value}
-      onChange={handleChange}
-      placeholder={placeholder}
-      data={selectData}
-      searchable
-      nothingFoundMessage="No tokens found"
-      leftSection={
-        selectedToken ? (
+    <Box
+      onClick={onClick}
+      style={{
+        ...seamlessStyles,
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        transition: 'all 0.2s ease',
+        '&:hover': {
+          backgroundColor:
+            variant === 'seamless'
+              ? 'rgba(255, 255, 255, 0.05)'
+              : 'rgba(255, 255, 255, 0.1)',
+        },
+      }}
+    >
+      {selectedToken ? (
+        <Group gap="sm" wrap="nowrap">
           <Avatar
             src={selectedToken.logoURI}
             size={variant === 'seamless' ? 'md' : 'sm'}
             radius="xl"
           />
-        ) : null
-      }
-      rightSection={
-        <IconChevronDown
-          size={16}
-          style={{ color: variant === 'seamless' ? 'white' : undefined }}
-        />
-      }
-      styles={{
-        input: {
-          ...seamlessStyles,
-          textAlign: 'center',
-          '&:focus': {
-            borderColor:
-              variant === 'seamless' ? 'rgba(255, 255, 255, 0.3)' : undefined,
-          },
-        },
-        section: {
-          color: variant === 'seamless' ? 'white' : undefined,
-        },
-      }}
-      renderOption={({ option }) => {
-        const tokenOption = option as (typeof selectData)[0];
-        return (
-          <Group gap="sm" p="sm">
-            <Avatar src={tokenOption.logoURI} size="sm" radius="xl" />
-            <Box>
-              <Text size="sm" fw={600}>
-                {tokenOption.symbol}
-              </Text>
-              <Text size="xs" c="dimmed">
-                {tokenOption.label}
-              </Text>
-            </Box>
-          </Group>
-        );
-      }}
-    />
+          <Text
+            size={variant === 'seamless' ? 'md' : 'sm'}
+            fw={600}
+            c={themeStyles.primaryText}
+            style={{ lineHeight: 1 }}
+          >
+            {selectedToken.symbol}
+          </Text>
+          <IconChevronDown
+            size={16}
+            style={{
+              color: themeStyles.primaryText,
+              marginLeft: 'auto',
+            }}
+          />
+        </Group>
+      ) : (
+        <Group gap="sm" wrap="nowrap">
+          <Text
+            size={variant === 'seamless' ? 'md' : 'sm'}
+            c={themeStyles.placeholderText}
+            style={{ lineHeight: 1 }}
+          >
+            {placeholder}
+          </Text>
+          <IconChevronDown
+            size={16}
+            style={{
+              color: themeStyles.placeholderText,
+              marginLeft: 'auto',
+            }}
+          />
+        </Group>
+      )}
+    </Box>
   );
 };

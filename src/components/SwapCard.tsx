@@ -11,6 +11,8 @@ import {
   Box,
   Center,
   Alert,
+  Menu,
+  UnstyledButton,
 } from '@mantine/core';
 import {
   IconArrowsUpDown,
@@ -18,11 +20,15 @@ import {
   IconAlertCircle,
   IconGasStation,
   IconBolt,
+  IconChevronDown,
+  IconPercentage,
 } from '@tabler/icons-react';
 import { useState, useEffect } from 'react';
+import { useThemeStyles } from '../hooks/useThemeStyles';
 import { useAccount } from 'wagmi';
 import { useTokenBalance } from '../hooks/useTokenBalance';
 import { TokenSelector } from './TokenSelector';
+import { TokenSelectionModal } from './TokenSelectionModal';
 import { useTokens } from '../services/tokenService';
 import type { Token } from '../services/tokenService';
 
@@ -70,11 +76,17 @@ const TokenBalance = ({
 export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
   const { address } = useAccount();
   const { data: tokens, isLoading: tokensLoading, error } = useTokens();
+  const themeStyles = useThemeStyles();
   const [fromToken, setFromToken] = useState('');
   const [toToken, setToToken] = useState('');
   const [fromAmount, setFromAmount] = useState('');
   const [toAmount, setToAmount] = useState('');
   const [isSwapping, setIsSwapping] = useState(false);
+  const [showTokenModal, setShowTokenModal] = useState(false);
+  const [modalSelectionType, setModalSelectionType] = useState<'from' | 'to'>(
+    'from',
+  );
+  const [showPercentageDropdown, setShowPercentageDropdown] = useState(false);
 
   // Set initial tokens when data loads
   useEffect(() => {
@@ -118,6 +130,29 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
   const selectedFromToken = tokens?.find((token) => token.symbol === fromToken);
   const selectedToToken = tokens?.find((token) => token.symbol === toToken);
 
+  const handleTokenModalOpen = (type: 'from' | 'to') => {
+    setModalSelectionType(type);
+    setShowTokenModal(true);
+  };
+
+  const handleTokenSelect = (token: Token) => {
+    if (modalSelectionType === 'from') {
+      setFromToken(token.symbol);
+    } else {
+      setToToken(token.symbol);
+    }
+  };
+
+  const handlePercentageClick = (percentage: number) => {
+    if (!address || !selectedFromToken) return;
+    
+    // TODO: Calculate actual balance percentage
+    // For now, use mock values
+    const mockBalance = 1000;
+    const amount = (mockBalance * percentage / 100).toString();
+    handleFromAmountChange(amount);
+  };
+
   const isSwapDisabled = !fromAmount || !toAmount || isSwapping || !address;
 
   if (tokensLoading) {
@@ -150,20 +185,20 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
   return (
     <Card
       shadow="xl"
-      p="xl"
+      p="lg"
       radius="xl"
       style={{
-        background: 'linear-gradient(135deg, #1a1b23, #2d3748)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        background: themeStyles.cardBackground,
+        border: `1px solid ${themeStyles.cardBorder}`,
         backdropFilter: 'blur(10px)',
       }}
     >
-      <Stack gap="lg">
+      <Stack gap="md">
         {/* Header */}
         <Group justify="space-between" align="center">
           <Group gap="sm">
             <IconBolt size={24} color="#4F46E5" />
-            <Title order={2} c="white" size="h3">
+            <Title order={2} c={themeStyles.primaryText} size="h3">
               Swap
             </Title>
           </Group>
@@ -172,32 +207,86 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
           </ActionIcon>
         </Group>
 
-        <Stack gap="xs">
+        <Stack gap="sm">
           {/* From Section */}
           <Box
             style={{
-              background: 'rgba(255, 255, 255, 0.05)',
+              background: themeStyles.sectionBackground,
               borderRadius: '16px',
-              padding: '20px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              padding: '14px',
+              border: `1px solid ${themeStyles.cardBorder}`,
+              position: 'relative',
+              transition: 'all 0.2s ease',
+              minHeight: showPercentageDropdown ? '120px' : 'auto',
             }}
           >
-            <Group justify="space-between" mb="sm">
-              <Text size="sm" c="rgba(255, 255, 255, 0.7)" fw={500}>
+            		<Group justify="space-between" mb="xs">
+              <Text size="sm" c={themeStyles.secondaryText} fw={500}>
                 From
               </Text>
               {address && selectedFromToken && (
                 <Group gap="xs">
-                  <Text size="xs" c="dimmed">
-                    Balance:
-                  </Text>
-                  <TokenBalance
-                    token={selectedFromToken}
-                    userAddress={address}
-                  />
+                  <Text size="xs" c="dimmed">Balance:</Text>
+                  <TokenBalance token={selectedFromToken} userAddress={address} />
+                  <UnstyledButton
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '2px',
+                      padding: '2px 4px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => setShowPercentageDropdown(!showPercentageDropdown)}
+                  >
+                    <IconPercentage size={12} color="#4F46E5" />
+                    <IconChevronDown 
+                      size={10} 
+                      color="#4F46E5" 
+                      style={{
+                        transform: showPercentageDropdown ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s ease',
+                      }}
+                    />
+                  </UnstyledButton>
                 </Group>
               )}
             </Group>
+
+            {/* Percentage Options */}
+            {showPercentageDropdown && address && selectedFromToken && (
+              <Group gap="xs" mb="sm">
+                <Text size="xs" c={themeStyles.secondaryText}>Quick select:</Text>
+                {[25, 50, 100].map((percentage, index) => (
+                  <>
+                    <UnstyledButton
+                      key={percentage}
+                      onClick={() => handlePercentageClick(percentage)}
+                      style={{
+                        padding: '4px 8px',
+                        borderRadius: '6px',
+                        background: themeStyles.sectionBackground,
+                        border: `1px solid ${themeStyles.cardBorder}`,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#4F46E5';
+                        e.currentTarget.style.transform = 'scale(1.02)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = themeStyles.sectionBackground;
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                    >
+                      <Text size="xs" c={themeStyles.primaryText} fw={500}>
+                        {percentage}%
+                      </Text>
+                    </UnstyledButton>
+                  </>
+                ))}
+              </Group>
+            )}
 
             <Group gap="md" align="center">
               <TokenSelector
@@ -206,6 +295,7 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
                 onChange={setFromToken}
                 placeholder="Select token"
                 variant="seamless"
+                onClick={() => handleTokenModalOpen('from')}
               />
               <NumberInput
                 value={fromAmount}
@@ -215,15 +305,15 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
                 size="xl"
                 styles={{
                   input: {
-                    background: 'transparent',
-                    border: 'none',
-                    color: 'white',
-                    fontSize: '2rem',
+                    background: "transparent",
+                    border: "none",
+                    color: themeStyles.primaryText,
+                    fontSize: "2rem",
                     fontWeight: 600,
-                    textAlign: 'right',
-                    padding: '0',
-                    '&::placeholder': {
-                      color: 'rgba(255, 255, 255, 0.4)',
+                    textAlign: "right",
+                    padding: "0",
+                    "&::placeholder": {
+                      color: themeStyles.placeholderText,
                     },
                   },
                 }}
@@ -233,7 +323,7 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
           </Box>
 
           {/* Swap Button */}
-          <Center my="xs">
+          <Center my="4px">
             <ActionIcon
               size="lg"
               variant="filled"
@@ -252,14 +342,14 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
           {/* To Section */}
           <Box
             style={{
-              background: 'rgba(255, 255, 255, 0.05)',
+              background: themeStyles.sectionBackground,
               borderRadius: '16px',
-              padding: '20px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              padding: '14px',
+              border: `1px solid ${themeStyles.cardBorder}`,
             }}
           >
-            <Group justify="space-between" mb="sm">
-              <Text size="sm" c="rgba(255, 255, 255, 0.7)" fw={500}>
+            <Group justify="space-between" mb="xs">
+              <Text size="sm" c={themeStyles.secondaryText} fw={500}>
                 To
               </Text>
               {address && selectedToToken && (
@@ -279,6 +369,7 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
                 onChange={setToToken}
                 placeholder="Select token"
                 variant="seamless"
+                onClick={() => handleTokenModalOpen('to')}
               />
               <NumberInput
                 value={toAmount}
@@ -290,13 +381,13 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
                   input: {
                     background: 'transparent',
                     border: 'none',
-                    color: 'white',
+                    color: themeStyles.primaryText,
                     fontSize: '2rem',
                     fontWeight: 600,
                     textAlign: 'right',
                     padding: '0',
                     '&::placeholder': {
-                      color: 'rgba(255, 255, 255, 0.4)',
+                      color: themeStyles.placeholderText,
                     },
                   },
                 }}
@@ -309,29 +400,29 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
           {fromAmount && toAmount && (
             <Box
               style={{
-                background: 'rgba(79, 70, 229, 0.1)',
+                background: themeStyles.infoBackground,
                 borderRadius: '12px',
                 padding: '12px 16px',
-                border: '1px solid rgba(79, 70, 229, 0.2)',
+                border: `1px solid ${themeStyles.infoBorder}`,
               }}
             >
               <Group justify="space-between" mb="xs">
-                <Text size="sm" c="rgba(255, 255, 255, 0.7)">
+                <Text size="sm" c={themeStyles.secondaryText}>
                   Exchange Rate
                 </Text>
-                <Text size="sm" c="white" fw={500}>
+                <Text size="sm" c={themeStyles.primaryText} fw={500}>
                   1 {fromToken} ={' '}
                   {(Number(toAmount) / Number(fromAmount)).toFixed(6)} {toToken}
                 </Text>
               </Group>
               <Group justify="space-between">
                 <Group gap="xs">
-                  <IconGasStation size={14} color="rgba(255, 255, 255, 0.7)" />
-                  <Text size="xs" c="rgba(255, 255, 255, 0.7)">
+                  <IconGasStation size={14} color={themeStyles.secondaryText} />
+                  <Text size="xs" c={themeStyles.secondaryText}>
                     Gas Fee
                   </Text>
                 </Group>
-                <Text size="xs" c="rgba(255, 255, 255, 0.7)">
+                <Text size="xs" c={themeStyles.secondaryText}>
                   ~$2.50
                 </Text>
               </Group>
@@ -347,7 +438,7 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
             onClick={handleSwapClick}
             style={{
               background: isSwapDisabled
-                ? 'rgba(255, 255, 255, 0.1)'
+                ? themeStyles.buttonBackground
                 : 'linear-gradient(45deg, #4F46E5, #06B6D4)',
               border: 'none',
               height: '56px',
@@ -365,6 +456,16 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
           </Button>
         </Stack>
       </Stack>
+      
+      {/* Token Selection Modal */}
+      <TokenSelectionModal
+        opened={showTokenModal}
+        onClose={() => setShowTokenModal(false)}
+        tokens={tokens || []}
+        onTokenSelect={handleTokenSelect}
+        selectedToken={modalSelectionType === 'from' ? selectedFromToken : selectedToToken}
+        title={modalSelectionType === 'from' ? 'Select Token to Swap From' : 'Select Token to Swap To'}
+      />
     </Card>
   );
 };
