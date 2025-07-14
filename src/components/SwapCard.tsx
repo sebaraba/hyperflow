@@ -11,7 +11,6 @@ import {
   Box,
   Center,
   Alert,
-  Menu,
   UnstyledButton,
 } from '@mantine/core';
 import {
@@ -257,7 +256,7 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
             {showPercentageDropdown && address && selectedFromToken && (
               <Group gap="xs" mb="sm">
                 <Text size="xs" c={themeStyles.secondaryText}>Quick select:</Text>
-                {[25, 50, 100].map((percentage, index) => (
+                {[25, 50, 100].map((percentage) => (
                   <>
                     <UnstyledButton
                       key={percentage}
