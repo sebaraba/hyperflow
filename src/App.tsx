@@ -5,6 +5,7 @@ import { Navigation } from './components/Navigation';
 import { Dashboard } from './pages/Dashboard.tsx';
 import { About } from './pages/About';
 import { SwapPage } from './pages/SwapPage.tsx';
+import { LiquidityPage } from './pages/LiquidityPage.tsx';
 import { Routes as AppRoutes } from './constants/routes.ts'; // Renamed Routes enum
 import { ComingSoon } from './pages/ComingSoon.tsx';
 
@@ -24,7 +25,7 @@ function App() {
               <Route path={AppRoutes.About} element={<About />} />
               <Route path={AppRoutes.Swap} element={<SwapPage />} />
               <Route path={AppRoutes.Dashboard} element={<Dashboard />} />
-              <Route path={AppRoutes.Liquidity} element={<ComingSoon />} />
+              <Route path={AppRoutes.Liquidity} element={<LiquidityPage />} />
               <Route path={AppRoutes.Lock} element={<ComingSoon />} />
               <Route path={AppRoutes.Vote} element={<ComingSoon />} />
               <Route path={AppRoutes.Incentivize} element={<ComingSoon />} />
