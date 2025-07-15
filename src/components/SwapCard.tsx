@@ -86,6 +86,8 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
     'from',
   );
   const [showPercentageDropdown, setShowPercentageDropdown] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [slippage, setSlippage] = useState(0.5); // Default 0.5%
 
   // Set initial tokens when data loads
   useEffect(() => {
@@ -95,12 +97,21 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
     }
   }, [tokens]);
 
+  // Recalculate amounts when slippage changes
+  useEffect(() => {
+    if (fromAmount && !isNaN(Number(fromAmount))) {
+      const slippageMultiplier = 1 - (slippage / 100);
+      setToAmount((Number(fromAmount) * slippageMultiplier).toFixed(6));
+    }
+  }, [slippage, fromAmount]);
+
   const handleFromAmountChange = (value: string | number) => {
     setFromAmount(String(value));
     // TODO: Add price calculation logic here
-    // For now, just set a mock conversion
+    // For now, just set a mock conversion with actual slippage
     if (value && !isNaN(Number(value))) {
-      setToAmount((Number(value) * 0.98).toFixed(6)); // Mock 2% slippage
+      const slippageMultiplier = 1 - (slippage / 100);
+      setToAmount((Number(value) * slippageMultiplier).toFixed(6));
     }
   };
 
@@ -201,10 +212,84 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
               Swap
             </Title>
           </Group>
-          <ActionIcon variant="subtle" size="lg" color="gray">
+          <ActionIcon 
+            variant="subtle" 
+            size="lg" 
+            color="gray"
+            onClick={() => setShowSettings(!showSettings)}
+            style={{
+              transform: showSettings ? 'rotate(45deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s ease',
+            }}
+          >
             <IconSettings size={18} />
           </ActionIcon>
         </Group>
+
+        {/* Settings Section */}
+        {showSettings && (
+          <Box
+            style={{
+              background: themeStyles.sectionBackground,
+              borderRadius: '16px',
+              padding: '16px',
+              border: `1px solid ${themeStyles.cardBorder}`,
+              marginBottom: '8px',
+            }}
+          >
+            <Group justify="space-between" mb="md">
+              <Text size="sm" c={themeStyles.primaryText} fw={600}>
+                Slippage Tolerance
+              </Text>
+              <Text size="xs" c={themeStyles.secondaryText}>
+                {slippage}%
+              </Text>
+            </Group>
+            <Group gap="xs">
+              {[0.1, 0.5, 1.0].map((percentage) => (
+                <UnstyledButton
+                  key={percentage}
+                  onClick={() => setSlippage(percentage)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    background: slippage === percentage 
+                      ? 'linear-gradient(45deg, #4F46E5, #06B6D4)'
+                      : themeStyles.sectionBackground,
+                    border: `1px solid ${slippage === percentage ? '#4F46E5' : themeStyles.cardBorder}`,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    minWidth: '60px',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (slippage !== percentage) {
+                      e.currentTarget.style.background = '#4F46E5';
+                      e.currentTarget.style.transform = 'scale(1.02)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (slippage !== percentage) {
+                      e.currentTarget.style.background = themeStyles.sectionBackground;
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }
+                  }}
+                >
+                  <Text 
+                    size="sm" 
+                    c={slippage === percentage ? 'white' : themeStyles.primaryText} 
+                    fw={500}
+                    ta="center"
+                  >
+                    {percentage}%
+                  </Text>
+                </UnstyledButton>
+              ))}
+            </Group>
+            <Text size="xs" c={themeStyles.secondaryText} mt="sm">
+              Higher slippage tolerance allows for larger price movements but increases the risk of unfavorable trades.
+            </Text>
+          </Box>
+        )}
 
         <Stack gap="sm">
           {/* From Section */}
