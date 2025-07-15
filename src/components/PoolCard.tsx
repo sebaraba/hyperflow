@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   Card,
   Group,
@@ -9,7 +8,7 @@ import {
   Button,
 } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
-import { AddLiquidityModal } from './AddLiquidityModal';
+import { useNavigate } from 'react-router-dom';
 import { useThemeStyles } from '../hooks/useThemeStyles';
 import type { LiquidityPool } from './mockPools';
 
@@ -19,13 +18,13 @@ interface PoolCardProps {
 
 export const PoolCard = ({ pool }: PoolCardProps) => {
   const themeStyles = useThemeStyles();
-  const [showAddLiquidity, setShowAddLiquidity] = useState(false);
+  const navigate = useNavigate();
 
   return (
-    <>
-      <Card
+    <Card
         shadow="md"
         radius="lg"
+        p="lg"
         style={{
           background: themeStyles.sectionBackground,
           border: `1px solid ${themeStyles.cardBorder}`,
@@ -42,118 +41,84 @@ export const PoolCard = ({ pool }: PoolCardProps) => {
           e.currentTarget.style.boxShadow = '';
         }}
       >
-        <Group justify="space-between" align="center" wrap="nowrap">
+        <Group justify="space-between" align="center" wrap="nowrap" style={{ width: '100%' }}>
           {/* Pool Info */}
-          <Group gap="md" align="center">
-            <Group gap="xs">
+          <Box style={{ width: '25%', minWidth: '200px' }}>
+            <Group gap="md" align="center">
               <Group gap="-xs">
-                <Avatar size={32} radius="xl" style={{ backgroundColor: '#4F46E5' }}>
-                  <Text size="sm" c="white" fw={600}>
+                <Avatar size={36} radius="xl" style={{ backgroundColor: '#4F46E5' }}>
+                  <Text size="md" c="white" fw={700}>
                     {pool.token0.symbol.charAt(0)}
                   </Text>
                 </Avatar>
-                <Avatar size={32} radius="xl" style={{ backgroundColor: '#06B6D4' }}>
-                  <Text size="sm" c="white" fw={600}>
+                <Avatar size={36} radius="xl" style={{ backgroundColor: '#06B6D4' }}>
+                  <Text size="md" c="white" fw={700}>
                     {pool.token1.symbol.charAt(0)}
                   </Text>
                 </Avatar>
               </Group>
               <Box>
-                <Text size="md" fw={600} c={themeStyles.primaryText}>
+                <Text size="lg" fw={700} c={themeStyles.primaryText}>
                   {pool.token0.symbol}/{pool.token1.symbol}
                 </Text>
-                <Badge
-                  variant="light"
-                  color={pool.apr > 10 ? 'green' : 'blue'}
-                  size="sm"
-                  mt={2}
-                >
-                  {pool.apr.toFixed(1)}% APR
-                </Badge>
+                <Text size="sm" c={themeStyles.secondaryText} fw={500}>
+                  {pool.token0.name} • {pool.token1.name}
+                </Text>
               </Box>
             </Group>
-          </Group>
+          </Box>
 
-          {/* Pool Stats */}
-          <Group gap="xl" align="center">
-            <Box style={{ minWidth: '80px' }}>
-              <Text size="xs" c={themeStyles.secondaryText}>
-                TVL
-              </Text>
-              <Text size="sm" fw={500} c={themeStyles.primaryText}>
-                ${pool.tvl.toLocaleString()}
-              </Text>
-            </Box>
-            <Box style={{ minWidth: '100px' }}>
-              <Text size="xs" c={themeStyles.secondaryText}>
-                Volume 24H
-              </Text>
-              <Text size="sm" fw={500} c={themeStyles.primaryText}>
-                ${pool.volume24h.toLocaleString()}
-              </Text>
-            </Box>
-            <Box style={{ minWidth: '80px' }}>
-              <Text size="xs" c={themeStyles.secondaryText}>
-                Fees 24H
-              </Text>
-              <Text size="sm" fw={500} c={themeStyles.primaryText}>
-                ${pool.fees24h.toLocaleString()}
-              </Text>
-            </Box>
-          </Group>
-
-          {/* User Position (if exists) */}
-          {pool.userLiquidity && (
-            <Box
-              style={{
-                background: themeStyles.cardBackground,
-                borderRadius: '8px',
-                padding: '8px 12px',
-                border: `1px solid ${themeStyles.cardBorder}`,
-                minWidth: '120px',
-              }}
+          {/* APR */}
+          <Box style={{ width: '15%', textAlign: 'center' }}>
+            <Badge
+              variant="light"
+              color={pool.apr > 10 ? 'green' : 'blue'}
+              size="lg"
+              style={{ fontSize: '14px', fontWeight: 600 }}
             >
-              <Text size="xs" c={themeStyles.secondaryText}>
-                Your Position
-              </Text>
-              <Text size="sm" fw={500} c={themeStyles.primaryText}>
-                ${pool.userLiquidity.toLocaleString()}
-              </Text>
-              <Text size="xs" c={themeStyles.secondaryText}>
-                {pool.userShare}% of pool
-              </Text>
-            </Box>
-          )}
+              {pool.apr.toFixed(1)}%
+            </Badge>
+          </Box>
+
+          {/* TVL */}
+          <Box style={{ width: '20%', textAlign: 'center' }}>
+            <Text size="lg" fw={600} c={themeStyles.primaryText}>
+              ${pool.tvl.toLocaleString()}
+            </Text>
+          </Box>
+
+          {/* Volume 24H */}
+          <Box style={{ width: '20%', textAlign: 'center' }}>
+            <Text size="lg" fw={600} c={themeStyles.primaryText}>
+              ${pool.volume24h.toLocaleString()}
+            </Text>
+          </Box>
+
+          {/* Fees 24H */}
+          <Box style={{ width: '20%', textAlign: 'center' }}>
+            <Text size="lg" fw={600} c={themeStyles.primaryText}>
+              ${pool.fees24h.toLocaleString()}
+            </Text>
+          </Box>
 
           {/* Actions */}
-          <Group gap="xs">
+          <Box style={{ width: '15%', textAlign: 'right' }}>
             <Button
               variant="filled"
-              size="sm"
-              leftSection={<IconPlus size={14} />}
-              onClick={() => setShowAddLiquidity(true)}
+              size="md"
+              leftSection={<IconPlus size={16} />}
+              onClick={() => navigate(`/liquidity/add/${pool.id}`)}
               style={{
                 background: 'linear-gradient(45deg, #4F46E5, #06B6D4)',
                 border: 'none',
+                fontSize: '14px',
+                fontWeight: 600,
               }}
             >
               Add Liquidity
             </Button>
-            {pool.userLiquidity && (
-              <Button variant="outline" size="sm" color="red">
-                Remove
-              </Button>
-            )}
-          </Group>
+          </Box>
         </Group>
       </Card>
-
-      {/* Add Liquidity Modal */}
-      <AddLiquidityModal
-        opened={showAddLiquidity}
-        onClose={() => setShowAddLiquidity(false)}
-        pool={pool}
-      />
-    </>
   );
 };

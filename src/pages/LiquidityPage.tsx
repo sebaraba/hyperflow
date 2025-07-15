@@ -9,15 +9,15 @@ export const LiquidityPage = () => {
   return (
     <Box
       style={{
-        width: '85%',
+        width: '90%',
         margin: '0 auto',
-        padding: '8px',
-        marginTop: '16px',
+        padding: '16px',
+        marginTop: '24px',
       }}
     >
       <Card
         shadow="xl"
-        p="lg"
+        p="xl"
         radius="xl"
         style={{
           background: themeStyles.cardBackground,
@@ -25,7 +25,7 @@ export const LiquidityPage = () => {
           backdropFilter: 'blur(10px)',
         }}
       >
-        <Stack gap="lg">
+        <Stack gap="xl">
           <LiquidityHeader />
           <LiquidityTabs />
         </Stack>
