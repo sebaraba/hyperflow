@@ -14,9 +14,12 @@ function App() {
     <QueryProvider>
       <Router>
         <AppShell
-          header={{ height: 70 }}
-          padding="md"
-          styles={{ main: { width: '100vw' } }}
+          header={{ height: 80 }}
+          padding="xl"
+          styles={{ 
+            main: { width: '100vw' },
+            header: { border: 'none' }
+          }}
         >
           <Navigation />
           <AppShell.Main style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
