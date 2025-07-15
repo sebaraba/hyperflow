@@ -7,12 +7,14 @@ export const LiquidityPage = () => {
   const themeStyles = useThemeStyles();
 
   return (
-    <Box style={{ 
-      width: '66.67%', 
-      margin: '0 auto', 
-      padding: '8px',
-      marginTop: '16px'
-    }}>
+    <Box
+      style={{
+        width: '85%',
+        margin: '0 auto',
+        padding: '8px',
+        marginTop: '16px',
+      }}
+    >
       <Card
         shadow="xl"
         p="lg"
@@ -31,4 +33,3 @@ export const LiquidityPage = () => {
     </Box>
   );
 };
-

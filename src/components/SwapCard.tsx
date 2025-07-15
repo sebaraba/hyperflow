@@ -2,7 +2,6 @@ import {
   Card,
   Stack,
   Group,
-  Title,
   Text,
   Button,
   NumberInput,
@@ -12,15 +11,16 @@ import {
   Center,
   Alert,
   UnstyledButton,
+  Title,
 } from '@mantine/core';
 import {
   IconArrowsUpDown,
   IconSettings,
   IconAlertCircle,
   IconGasStation,
-  IconBolt,
   IconChevronDown,
   IconPercentage,
+  IconBolt,
 } from '@tabler/icons-react';
 import { useState, useEffect } from 'react';
 import { useThemeStyles } from '../hooks/useThemeStyles';
@@ -144,11 +144,11 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
 
   const handlePercentageClick = (percentage: number) => {
     if (!address || !selectedFromToken) return;
-    
+
     // TODO: Calculate actual balance percentage
     // For now, use mock values
     const mockBalance = 1000;
-    const amount = (mockBalance * percentage / 100).toString();
+    const amount = ((mockBalance * percentage) / 100).toString();
     handleFromAmountChange(amount);
   };
 
@@ -219,14 +219,19 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
               minHeight: showPercentageDropdown ? '120px' : 'auto',
             }}
           >
-            		<Group justify="space-between" mb="xs">
+            <Group justify="space-between" mb="xs">
               <Text size="sm" c={themeStyles.secondaryText} fw={500}>
                 From
               </Text>
               {address && selectedFromToken && (
                 <Group gap="xs">
-                  <Text size="xs" c="dimmed">Balance:</Text>
-                  <TokenBalance token={selectedFromToken} userAddress={address} />
+                  <Text size="xs" c="dimmed">
+                    Balance:
+                  </Text>
+                  <TokenBalance
+                    token={selectedFromToken}
+                    userAddress={address}
+                  />
                   <UnstyledButton
                     style={{
                       display: 'flex',
@@ -236,14 +241,18 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
                       borderRadius: '4px',
                       cursor: 'pointer',
                     }}
-                    onClick={() => setShowPercentageDropdown(!showPercentageDropdown)}
+                    onClick={() =>
+                      setShowPercentageDropdown(!showPercentageDropdown)
+                    }
                   >
                     <IconPercentage size={12} color="#4F46E5" />
-                    <IconChevronDown 
-                      size={10} 
-                      color="#4F46E5" 
+                    <IconChevronDown
+                      size={10}
+                      color="#4F46E5"
                       style={{
-                        transform: showPercentageDropdown ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transform: showPercentageDropdown
+                          ? 'rotate(180deg)'
+                          : 'rotate(0deg)',
                         transition: 'transform 0.2s ease',
                       }}
                     />
@@ -255,7 +264,9 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
             {/* Percentage Options */}
             {showPercentageDropdown && address && selectedFromToken && (
               <Group gap="xs" mb="sm">
-                <Text size="xs" c={themeStyles.secondaryText}>Quick select:</Text>
+                <Text size="xs" c={themeStyles.secondaryText}>
+                  Quick select:
+                </Text>
                 {[25, 50, 100].map((percentage) => (
                   <>
                     <UnstyledButton
@@ -274,7 +285,8 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
                         e.currentTarget.style.transform = 'scale(1.02)';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = themeStyles.sectionBackground;
+                        e.currentTarget.style.background =
+                          themeStyles.sectionBackground;
                         e.currentTarget.style.transform = 'scale(1)';
                       }}
                     >
@@ -304,14 +316,14 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
                 size="xl"
                 styles={{
                   input: {
-                    background: "transparent",
-                    border: "none",
+                    background: 'transparent',
+                    border: 'none',
                     color: themeStyles.primaryText,
-                    fontSize: "2rem",
+                    fontSize: '2rem',
                     fontWeight: 600,
-                    textAlign: "right",
-                    padding: "0",
-                    "&::placeholder": {
+                    textAlign: 'right',
+                    padding: '0',
+                    '&::placeholder': {
                       color: themeStyles.placeholderText,
                     },
                   },
@@ -455,15 +467,21 @@ export const SwapCard = ({ onSwapClick }: SwapCardProps) => {
           </Button>
         </Stack>
       </Stack>
-      
+
       {/* Token Selection Modal */}
       <TokenSelectionModal
         opened={showTokenModal}
         onClose={() => setShowTokenModal(false)}
         tokens={tokens || []}
         onTokenSelect={handleTokenSelect}
-        selectedToken={modalSelectionType === 'from' ? selectedFromToken : selectedToToken}
-        title={modalSelectionType === 'from' ? 'Select Token to Swap From' : 'Select Token to Swap To'}
+        selectedToken={
+          modalSelectionType === 'from' ? selectedFromToken : selectedToToken
+        }
+        title={
+          modalSelectionType === 'from'
+            ? 'Select Token to Swap From'
+            : 'Select Token to Swap To'
+        }
       />
     </Card>
   );

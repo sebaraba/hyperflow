@@ -14,15 +14,20 @@ function App() {
     <QueryProvider>
       <Router>
         <AppShell
-          header={{ height: 80 }}
+          header={{ height: 100 }}
           padding="xl"
-          styles={{ 
+          styles={{
             main: { width: '100vw' },
-            header: { border: 'none' }
+            header: { border: 'none' },
           }}
         >
           <Navigation />
-          <AppShell.Main style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <AppShell.Main
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path={AppRoutes.About} element={<About />} />
