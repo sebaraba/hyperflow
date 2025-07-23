@@ -19,7 +19,7 @@ export const SwapPage = () => {
 
   return (
     <Container size="lg">
-      <Box style={{ maxWidth: '480px' }}>
+      <Box style={{ maxWidth: '480px', padding: '16px', marginTop: '24px' }}>
         <SwapCard onSwapClick={handleSwapClick} />
       </Box>
       <Stack gap="xl" py="md"></Stack>
